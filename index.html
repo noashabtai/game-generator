@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎲 מחולל משחק קופסה גדודי</title>
+    <title>מחולל משחק קופסה גדודי</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,8 +13,8 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Heebo', sans-serif;
+            background: linear-gradient(135deg, #2d5016 0%, #1a3a0a 100%);
             min-height: 100vh;
             padding: 20px;
             color: #333;
@@ -24,12 +25,12 @@
             margin: 0 auto;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             overflow: hidden;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2d5016 0%, #1a3a0a 100%);
             color: white;
             padding: 40px 20px;
             text-align: center;
@@ -38,21 +39,41 @@
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
+            font-family: 'Heebo', sans-serif;
+            font-weight: 700;
         }
 
         .header p {
             font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .credit {
+            margin-top: 15px;
+            font-size: 0.95em;
             opacity: 0.9;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .copyright {
+            margin-top: 8px;
+            font-size: 0.85em;
+            opacity: 0.8;
         }
 
         .content {
             padding: 40px;
+            background: #f9f9f9;
         }
 
         .section {
             margin-bottom: 30px;
             padding-bottom: 30px;
             border-bottom: 1px solid #eee;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
         }
 
         .section:last-child {
@@ -61,9 +82,10 @@
 
         .section-title {
             font-size: 1.5em;
-            color: #667eea;
+            color: #2d5016;
             margin-bottom: 15px;
             font-weight: bold;
+            font-family: 'Heebo', sans-serif;
         }
 
         .form-group {
@@ -75,6 +97,7 @@
             margin-bottom: 5px;
             font-weight: bold;
             color: #333;
+            font-family: 'Heebo', sans-serif;
         }
 
         input[type="text"],
@@ -84,7 +107,7 @@
             padding: 10px;
             border: 2px solid #ddd;
             border-radius: 6px;
-            font-family: inherit;
+            font-family: 'Heebo', sans-serif;
             font-size: 1em;
             transition: border-color 0.3s;
         }
@@ -93,7 +116,7 @@
         textarea:focus,
         input[type="file"]:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #2d5016;
         }
 
         textarea {
@@ -124,6 +147,7 @@
             border: 2px solid #ddd;
             border-radius: 6px;
             font-size: 0.9em;
+            font-family: 'Heebo', sans-serif;
         }
 
         .companies-list {
@@ -134,19 +158,20 @@
         }
 
         .company-tag {
-            background: #e8f0ff;
-            border: 2px solid #667eea;
-            color: #667eea;
+            background: #e8f5e9;
+            border: 2px solid #2d5016;
+            color: #2d5016;
             padding: 8px 12px;
             border-radius: 20px;
             display: flex;
             align-items: center;
             gap: 8px;
             font-size: 0.9em;
+            font-family: 'Heebo', sans-serif;
         }
 
         .company-tag button {
-            background: #667eea;
+            background: #2d5016;
             color: white;
             border: none;
             border-radius: 50%;
@@ -160,17 +185,18 @@
         }
 
         .file-upload {
-            border: 2px dashed #667eea;
+            border: 2px dashed #2d5016;
             padding: 20px;
             border-radius: 6px;
             text-align: center;
             cursor: pointer;
-            background: #f8f9ff;
+            background: #f5f5f5;
             transition: background 0.3s;
+            font-family: 'Heebo', sans-serif;
         }
 
         .file-upload:hover {
-            background: #e8f0ff;
+            background: #efefef;
         }
 
         .file-upload.uploaded {
@@ -182,6 +208,7 @@
             margin-top: 10px;
             font-size: 0.9em;
             color: #666;
+            font-family: 'Heebo', sans-serif;
         }
 
         .file-status.success {
@@ -203,16 +230,17 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
+            font-family: 'Heebo', sans-serif;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2d5016 0%, #1a3a0a 100%);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 20px rgba(45, 80, 22, 0.4);
         }
 
         .btn-primary:disabled {
@@ -237,6 +265,7 @@
             text-align: center;
             font-weight: bold;
             display: none;
+            font-family: 'Heebo', sans-serif;
         }
 
         .status.show {
@@ -281,6 +310,7 @@
             margin-bottom: 20px;
             font-size: 0.95em;
             line-height: 1.5;
+            font-family: 'Heebo', sans-serif;
         }
 
         .stats {
@@ -295,12 +325,13 @@
             padding: 15px;
             border-radius: 6px;
             text-align: center;
+            font-family: 'Heebo', sans-serif;
         }
 
         .stat-number {
             font-size: 2em;
             font-weight: bold;
-            color: #667eea;
+            color: #2d5016;
         }
 
         .stat-label {
@@ -313,15 +344,21 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎲 מחולל משחק קופסה גדודי</h1>
+            <h1>מחולל משחק קופסה גדודי</h1>
             <p>צרו משחק ממותג בעצמכם!</p>
+            <div class="credit">
+                <strong>פותח על ידי - נעה שבתאי</strong>
+                <div class="copyright">
+                    © כל הזכויות שמורות. אין לשכפל, להעתיק או לשלוח בלי רשות מראש.
+                </div>
+            </div>
         </div>
 
         <div class="content">
             <form id="gameForm">
                 <!-- שלב 1: מידע כללי -->
                 <div class="section">
-                    <h2 class="section-title">📋 שלב 1: מידע כללי</h2>
+                    <h2 class="section-title">מידע כללי</h2>
                     
                     <div class="form-group">
                         <label for="gameName">שם המשחק *</label>
@@ -347,10 +384,10 @@
 
                 <!-- שלב 2: קטגוריות -->
                 <div class="section">
-                    <h2 class="section-title">📚 שלב 2: 10 קטגוריות</h2>
+                    <h2 class="section-title">10 קטגוריות</h2>
                     
                     <div class="info-box">
-                        💡 הקטגוריות האלה רק בשבילנו - לא תיצואו! הן עוזרות לאיזון המילים החדשות.
+                        💡 הקטגוריות האלה רק בשבילנו - הם לא יופיעו! הן עוזרות למצוא את המילים החדשות.
                     </div>
 
                     <div class="categories-container" id="categoriesContainer"></div>
@@ -358,17 +395,17 @@
 
                 <!-- שלב 3: קובץ מילים -->
                 <div class="section">
-                    <h2 class="section-title">📝 שלב 3: העלאת קובץ מילים</h2>
+                    <h2 class="section-title">העלאת קובץ מילים</h2>
                     
                     <div class="info-box">
                         📄 העלו קובץ Excel/CSV עם מילים שחשובות לכם. אם יש פחות מ-800 - אני אשלים!
                     </div>
 
                     <div class="form-group">
-                        <label for="wordsFile">בחר קובץ מילים (Excel / CSV) *</label>
+                        <label for="wordsFile">בחרו קובץ מילים (Excel / CSV) *</label>
                         <div class="file-upload" id="wordsUpload">
                             <input type="file" id="wordsFile" name="wordsFile" accept=".xlsx,.xls,.csv" style="display: none;">
-                            <div>📁 לחץ כאן או גרור קובץ</div>
+                            <div>📁 לחצו כאן או גררו קובץ</div>
                             <div class="file-status" id="wordsStatus"></div>
                         </div>
                     </div>
@@ -376,23 +413,23 @@
 
                 <!-- שלב 4: קובץ סיפורים -->
                 <div class="section">
-                    <h2 class="section-title">🎤 שלב 4: העלאת קובץ סיפורים (לפי פלוגות)</h2>
+                    <h2 class="section-title">העלאת קובץ סיפורים (לפי פלוגות)</h2>
                     
                     <div class="info-box">
                         📖 העלו Excel עם שתי עמודות: "פלוגה" ו"סיפור". אני אחלץ שאלות מתוך זה!
                     </div>
 
                     <div class="form-group">
-                        <label for="storiesFile">בחר קובץ סיפורים (Excel) *</label>
+                        <label for="storiesFile">בחרו קובץ סיפורים (Excel) *</label>
                         <div class="file-upload" id="storiesUpload">
                             <input type="file" id="storiesFile" name="storiesFile" accept=".xlsx,.xls,.csv" style="display: none;">
-                            <div>📁 לחץ כאן או גרור קובץ</div>
+                            <div>📁 לחצו כאן או גררו קובץ</div>
                             <div class="file-status" id="storiesStatus"></div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="companiesInput">פלוגות בגדוד (הפרד בפסיק) *</label>
+                        <label for="companiesInput">פלוגות בגדוד (הפרידו בפסיק) *</label>
                         <input type="text" id="companiesInput" placeholder="למשל: א׳, ב׳, ג׳, מפקדה" required>
                         <div class="companies-list" id="companiesList"></div>
                     </div>
@@ -415,10 +452,10 @@
 
                     <div class="button-group">
                         <button type="submit" class="btn-primary" id="submitBtn">
-                            🚀 עבד את הנתונים
+                            צא לביצוע
                         </button>
                         <button type="reset" class="btn-secondary">
-                            🔄 אתחל
+                            התחל מחדש
                         </button>
                     </div>
                 </div>
@@ -564,7 +601,7 @@
 
                 if (response.ok) {
                     status.className = 'status show success';
-                    status.innerHTML = '✅ הקובץ מוכן! <a href="/api/download/latest" download>הורד Excel</a>';
+                    status.innerHTML = '✅ הקובץ מוכן! <a href="/api/download/latest" download>הורדו Excel</a>';
                 } else {
                     throw new Error(data.error || 'שגיאה בעיבוד');
                 }
