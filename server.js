@@ -16,6 +16,28 @@ app.use(express.static('public'));
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+// שמירת שם הקובץ האחרון
+let lastFilename = null;
+
+// ==================== ניהול סיסמאות ====================
+
+const ADMIN_PASSWORD = 'Noa712';
+
+const UNIT_PASSWORDS = {
+  'ALPHA7821': { name: 'גדוד א׳', used: false },
+  'BRAVO5493': { name: 'גדוד ב׳', used: false },
+  'CHARLIE2847': { name: 'גדוד ג׳', used: false },
+  'DELTA9156': { name: 'גדוד ד׳', used: false },
+  'ECHO6734': { name: 'גדוד ה׳', used: false },
+  'FOXTROT4521': { name: 'גדוד ו׳', used: false },
+  'GOLF8309': { name: 'גדוד ז׳', used: false },
+  'HOTEL1675': { name: 'גדוד ח׳', used: false },
+  'INDIA7942': { name: 'גדוד ט׳', used: false },
+  'JULIET3568': { name: 'גדוד י׳', used: false },
+  'KILO8425': { name: 'גדוד יא׳', used: false },
+  'LIMA5912': { name: 'גדוד יב׳', used: false }
+};
+
 // ==================== עיבוד הנתונים ====================
 
 async function generateMissingWords(categories, existingWords, totalWords = 800) {
@@ -176,19 +198,116 @@ function createExcelFile(words, questions, metadata) {
 
 // ==================== API Routes ====================
 
+// בדיקת סיסמה
+app.post('/api/verify-password', (req, res) => {
+  try {
+    const { password } = req.body;
+
+    if (!password) {
+      return res.status(400).json({ error: 'נא הכנסו סיסמה' });
+    }
+
+    // בדיקה אם זו סיסמת Admin
+    if (password === ADMIN_PASSWORD) {
+      return res.json({ 
+        valid: true, 
+        type: 'admin',
+        message: 'ברוכה הבאה Admin!'
+      });
+    }
+
+    // בדיקה אם זו סיסמה של גדוד
+    if (UNIT_PASSWORDS[password]) {
+      const unitInfo = UNIT_PASSWORDS[password];
+      if (unitInfo.used) {
+        return res.status(403).json({ 
+          error: 'סיסמה זו כבר שימשה. אנא צרו קשר עם נעה לסיסמה חדשה.' 
+        });
+      }
+      return res.json({ 
+        valid: true, 
+        type: 'unit',
+        unitName: unitInfo.name,
+        message: `ברוכים הבאים ${unitInfo.name}!`
+      });
+    }
+
+    return res.status(401).json({ error: 'סיסמה לא נכונה' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Admin - קבלת רשימת סיסמאות
+app.get('/api/admin/passwords', (req, res) => {
+  try {
+    const adminPassword = req.query.adminPass;
+    
+    if (adminPassword !== ADMIN_PASSWORD) {
+      return res.status(403).json({ error: 'גישה נדחתה' });
+    }
+
+    const passwordsList = Object.entries(UNIT_PASSWORDS).map(([pass, info]) => ({
+      password: pass,
+      unitName: info.name,
+      used: info.used
+    }));
+
+    res.json({ passwords: passwordsList });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Admin - יצירת סיסמה חדשה
+app.post('/api/admin/new-password', (req, res) => {
+  try {
+    const { adminPass, unitIndex, newPassword } = req.body;
+
+    if (adminPass !== ADMIN_PASSWORD) {
+      return res.status(403).json({ error: 'גישה נדחתה' });
+    }
+
+    const unitKeys = Object.keys(UNIT_PASSWORDS);
+    if (unitIndex < 0 || unitIndex >= unitKeys.length) {
+      return res.status(400).json({ error: 'אינדקס גדוד לא תקין' });
+    }
+
+    const oldPass = unitKeys[unitIndex];
+    const unitName = UNIT_PASSWORDS[oldPass].name;
+
+    // מחק את הסיסמה הישנה
+    delete UNIT_PASSWORDS[oldPass];
+
+    // הוסף סיסמה חדשה
+    UNIT_PASSWORDS[newPassword] = { name: unitName, used: false };
+
+    res.json({ 
+      success: true, 
+      message: `סיסמה חדשה ליצור ${unitName}: ${newPassword}` 
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// עיבוד קבצים (חייבת סיסמה תקינה)
 app.post('/api/process', upload.fields([
   { name: 'wordsFile', maxCount: 1 },
   { name: 'storiesFile', maxCount: 1 }
 ]), async (req, res) => {
   try {
-    const {
-      gameName,
-      slogan,
-      storyCardName,
-      civilianCardName,
-      categories,
-      companies
-    } = req.body;
+    const { password, gameName, slogan, storyCardName, civilianCardName, categories, companies } = req.body;
+
+    // בדיקת סיסמה
+    if (!UNIT_PASSWORDS[password] && password !== ADMIN_PASSWORD) {
+      return res.status(403).json({ error: 'סיסמה לא תקינה' });
+    }
+
+    // סימון סיסמה כשימשה (אם היא סיסמה של גדוד)
+    if (UNIT_PASSWORDS[password] && password !== ADMIN_PASSWORD) {
+      UNIT_PASSWORDS[password].used = true;
+    }
 
     const categoriesList = JSON.parse(categories || '[]');
     const companiesList = JSON.parse(companies || '[]');
@@ -231,6 +350,7 @@ app.post('/api/process', upload.fields([
 
         const filename = `game-${Date.now()}.xlsx`;
         fs.writeFileSync(`/tmp/${filename}`, excelBuffer);
+        lastFilename = filename;
 
         console.log(`✅ קובץ יצוא: ${filename}`);
       } catch (error) {
@@ -244,18 +364,26 @@ app.post('/api/process', upload.fields([
   }
 });
 
-// הורדת קובץ
-app.get('/api/download/:filename', (req, res) => {
+// הורדת קובץ - גרסה מתוקנת
+app.get('/api/download/latest', (req, res) => {
   try {
-    const filename = req.params.filename;
-    const filepath = path.join('/tmp', filename);
+    if (!lastFilename) {
+      return res.status(404).json({ error: 'קובץ לא נמצא. אנא העלו קבצים תחילה.' });
+    }
+
+    const filepath = path.join('/tmp', lastFilename);
 
     if (!fs.existsSync(filepath)) {
-      return res.status(404).json({ error: 'קובץ לא נמצא' });
+      return res.status(404).json({ error: 'קובץ לא זמין. אנא נסו שוב.' });
     }
 
     res.download(filepath, `game-generator-${Date.now()}.xlsx`, () => {
-      fs.unlinkSync(filepath);
+      try {
+        fs.unlinkSync(filepath);
+        lastFilename = null;
+      } catch (e) {
+        console.error('Error deleting file:', e);
+      }
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -269,4 +397,6 @@ app.listen(PORT, () => {
   console.log(`🎲 משחק קופסה גדודי - מחולל תוכן`);
   console.log(`🌐 שרת פועל על: http://localhost:${PORT}`);
   console.log(`🤖 Gemini API: ${process.env.GEMINI_API_KEY ? '✅ מוגדר' : '❌ לא מוגדר'}`);
+  console.log(`🔐 Admin Password: ${ADMIN_PASSWORD}`);
+  console.log(`📝 Unit Passwords: ${Object.keys(UNIT_PASSWORDS).length} גדודים`);
 });
